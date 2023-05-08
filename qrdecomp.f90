@@ -2,9 +2,10 @@ program qrdecomp
     use my_library
 
     implicit none 
-    real * 8 :: A(5,5),G(5,5),GA(5,5)
-    real * 8 :: theta 
-    integer :: N 
+    real * 8 :: A(3,3),G(3,3),GA(3,3),Q(3,3),AK(3,3)
+    real * 8 ::eigenvalues(3)
+    real * 8 :: tolerance 
+    integer :: N ,ii ,max_iter
 
     N = size(A,1)
 
@@ -29,10 +30,24 @@ program qrdecomp
     !A(3,2) = 4.0d0
     !A(3,3) = 3.0d0
 
-    A = create_identity(5)
+    !A = create_identity(5)
 
    
-    call triangularise(A,G)
-    call display_matrix(G)
-
+    !call triangularise(A,G,Q)
+    !call display_matrix(matmul(Q,G))
+    !call display_matrix(A)
+    !max_iter = 1
+    !AK = A
+    !do ii = 1,max_iter
+    !    call triangularise(AK,G,Q)
+    !    AK = matmul(AK,Q)
+    !    AK = matmul(TRANSPOSE(Q),AK)
+    !    print*, "iteration",ii
+    !    call display_matrix(AK)
+    !    print*,"/////"
+    !end do
+    tolerance = 0.000001d0
+    call eigenvalue_QR(A,eigenvalues,tolerance)
+    !call display_matrix(reshape(eigenvalues,[1,N]))
+    print*,(eigenvalues)
 end program
