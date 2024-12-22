@@ -5,6 +5,7 @@ program qrdecomp
     real * 8 :: A(3,3),G(3,3),GA(3,3),Q(3,3),AK(3,3)
     real * 8 ::eigenvalues(3)
     real * 8 :: tolerance 
+    real * 8 :: work(3,3)
     integer :: N ,ii ,max_iter
 
     N = size(A,1)
@@ -47,7 +48,10 @@ program qrdecomp
     !    print*,"/////"
     !end do
     tolerance = 0.000001d0
-    call eigenvalue_QR(A,eigenvalues,tolerance)
+    call eigenvalue_QR(A,eigenvalues,tolerance,work)
+    call display_matrix(work)
     !call display_matrix(reshape(eigenvalues,[1,N]))
     print*,(eigenvalues)
+    call display_matrix(matmul(transpose(work),matmul(A,work)))
+
 end program

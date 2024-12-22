@@ -136,10 +136,10 @@ module my_library
 
     end 
 
-    subroutine eigenvalue_QR(A,eigenvalues,tolerance) 
+    subroutine eigenvalue_QR(A,eigenvalues,tolerance,work) 
         use, intrinsic :: iso_fortran_env, only: REAL64, INT64
-        real * 8 :: A(:,:), eigenvalues(:),tolerance
-        real * 8,allocatable:: AK(:,:),G(:,:),Q(:,:) 
+        real * 8 :: A(:,:), eigenvalues(:),tolerance,work(:,:)
+        real * 8,allocatable:: AK(:,:),G(:,:),Q(:,:)
         real * 8,allocatable:: prev_eigenvalues(:),eigendiff(:)
         real * 8:: norm,prevnorm
         integer :: N ,ii, max_iter
@@ -156,11 +156,12 @@ module my_library
         AK = matmul(AK,Q)
         AK = matmul(TRANSPOSE(Q),AK)
         call get_diagonals(AK,prev_eigenvalues)
-        
+        work = Q
         do ii = 1,max_iter
             call triangularise(AK,G,Q)
             AK = matmul(AK,Q)
             AK = matmul(TRANSPOSE(Q),AK)
+            work = matmul(work,Q)
             call get_diagonals(AK,eigenvalues)
             eigendiff = eigenvalues - prev_eigenvalues
             norm = dot_product(eigendiff,eigendiff) 
@@ -172,7 +173,7 @@ module my_library
             prev_eigenvalues = eigenvalues
         end do 
 
-
+        !work = AK
 
 
     end 
